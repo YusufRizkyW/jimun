@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-// Import auth
-import 'auth/welcome_screen.dart';
-import 'auth/login_screen.dart';
-import 'auth/register_screen.dart';
-import 'auth/success_screen.dart';
-
-// Import dashboard
-import 'screens/home_screen.dart';
+import 'welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,22 +12,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'JiMun',
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.teal,
-        fontFamily: 'Sans',
-      ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const OnboardingScreen(),
-        '/welcome': (context) => const WelcomeScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
-        '/success': (context) => const SuccessScreen(),
-        '/home': (context) => const HomeScreen(userName: 'Aisyah Nur Aini'),
-      },
+      home: OnboardingScreen(),
     );
   }
 }
@@ -54,6 +33,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -104,7 +84,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (isLastPage) {
-                        Navigator.pushReplacementNamed(context, '/welcome');
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const WelcomeScreen(),
+                          ),
+                        );
                       } else {
                         _controller.nextPage(
                           duration: const Duration(milliseconds: 500),
@@ -152,7 +137,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             topText,
             textAlign: TextAlign.center,
             style: GoogleFonts.aclonica(
-              fontSize: height * 0.022,
+              fontSize: height * 0.022, // responsive text size
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
