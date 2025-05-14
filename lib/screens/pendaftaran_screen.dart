@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'antrian_screen.dart';
 
-class PendaftaranScreen extends StatelessWidget {
+class PendaftaranScreen extends StatefulWidget {
   const PendaftaranScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController nikController = TextEditingController();
-    final TextEditingController namaController = TextEditingController();
-    final TextEditingController tanggalController = TextEditingController();
-    final TextEditingController imunisasiController = TextEditingController();
+  State<PendaftaranScreen> createState() => _PendaftaranScreenState();
+}
 
+class _PendaftaranScreenState extends State<PendaftaranScreen> {
+  final TextEditingController nikController = TextEditingController();
+  final TextEditingController namaController = TextEditingController();
+  final TextEditingController tanggalController = TextEditingController();
+  final TextEditingController imunisasiController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -17,15 +23,11 @@ class PendaftaranScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Tombol kembali
               IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () => Navigator.pop(context),
               ),
-
               const SizedBox(height: 8),
-
-              // Judul
               Center(
                 child: Column(
                   children: [
@@ -69,10 +71,7 @@ class PendaftaranScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 16),
-
-              // Formulir
               Center(
                 child: Column(
                   children: [
@@ -119,29 +118,41 @@ class PendaftaranScreen extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(height: 24),
-
-              // Tombol daftar sekarang
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // TODO: Simpan data / kirim ke backend
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => AntrianScreen(
+                          adaAntrian: true,
+                          nomorAntrian: 15,
+                          nama: namaController.text,
+                          nik: nikController.text,
+                          tanggalLahir: tanggalController.text,
+                          jenisImunisasi: imunisasiController.text,
+                          tanggalPelayanan: '20 Januari 2025',
+                          lokasi: 'Puskesmas Deket Lamongan',
+                        ),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF009688),
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
                   child: const Text(
                     'DAFTAR SEKARANG',
-                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style:
+                        TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
             ],
           ),
@@ -162,7 +173,8 @@ class PendaftaranScreen extends StatelessWidget {
             hintText: hint,
             filled: true,
             fillColor: Colors.grey[100],
-            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,

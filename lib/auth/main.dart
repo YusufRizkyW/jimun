@@ -1,7 +1,10 @@
+// main.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'welcome_screen.dart';
+import '../screens/antrian_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -12,9 +15,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OnboardingScreen(),
+      title: 'JiMun',
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
+      ),
+      home: const OnboardingScreen(),
+      routes: {
+        
+        '/antrian': (context) => const AntrianScreen(
+              adaAntrian: false,
+              nomorAntrian: 0,
+              nama: '',
+              nik: '',
+              tanggalLahir: '',
+              jenisImunisasi: '',
+              tanggalPelayanan: '',
+              lokasi: '',
+            ),
+      },
     );
   }
 }
@@ -33,7 +53,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
+   
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -84,12 +104,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (isLastPage) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const WelcomeScreen(),
-                          ),
-                        );
+                        Navigator.pushReplacementNamed(context, '/daftar');
                       } else {
                         _controller.nextPage(
                           duration: const Duration(milliseconds: 500),
@@ -137,7 +152,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             topText,
             textAlign: TextAlign.center,
             style: GoogleFonts.aclonica(
-              fontSize: height * 0.022, // responsive text size
+              fontSize: height * 0.022,
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
