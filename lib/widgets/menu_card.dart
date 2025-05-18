@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:jimun/screens/pendaftaran_screen.dart';
-import 'package:jimun/screens/antrian_screen.dart';
+import 'package:JiMun/screens/pendaftaran_screen.dart';
+import 'package:JiMun/screens/antrian_screen.dart';
 
 class MenuCard extends StatelessWidget {
   final IconData icon;
