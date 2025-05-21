@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'register_screen.dart';
 import 'success_screen.dart';
+import '../services/auth_service.dart'; // Pastikan Anda mengimpor AuthService
+import '../screens/home_screen.dart'; // Pastikan Anda mengimpor HomeScreen jika diperlukan
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final numberController = TextEditingController();
+    final nohpController = TextEditingController();
     final passwordController = TextEditingController();
 
     return Scaffold(
@@ -40,8 +42,8 @@ class LoginScreen extends StatelessWidget {
                       textAlign: TextAlign.center),
                   const SizedBox(height: 20),
                   TextField(
-                    controller: numberController,
-                    decoration: inputDecoration("Number", Icons.confirmation_number),
+                    controller: nohpController,
+                    decoration: inputDecoration("No. Telp", Icons.confirmation_number),
                   ),
                   const SizedBox(height: 10),
                   TextField(
@@ -54,11 +56,26 @@ class LoginScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const SuccessScreen()),
+                        onPressed: () async {
+                          final result = await AuthService.login(
+                            nohp: nohpController.text,
+                            password: passwordController.text,
                           );
+                          if (result['success']) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (_) => const HomeScreen()),
+                            );
+                            // TODO: Arahkan ke halaman utama/home setelah login sukses
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Login berhasil!')),
+                            );
+                            // Contoh: Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['message'] ?? 'Login gagal')),
+                            );
+                          }
                         },
                         style: buttonStyle(background: Colors.white, foreground: Colors.teal),
                         child: Text("Masuk", style: GoogleFonts.aclonica()),

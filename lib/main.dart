@@ -34,7 +34,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/success': (context) => const SuccessScreen(),
-        '/home': (context) => const HomeScreen(userName: 'Aisyah Nur Aini'),
+        // '/home': (context) => const HomeScreen(userName: 'Aisyah Nur Aini'),
+        '/home': (context) => const HomeScreen(),
       },
     );
   }

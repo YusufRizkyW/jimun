@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/home_screen.dart'; // pastikan path-nya sesuai dengan struktur project kamu
+import 'login_screen.dart';
 
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({super.key});
@@ -35,8 +36,7 @@ class SuccessScreen extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const HomeScreen(userName: 'Aisyah Nur Aini'),
+                    builder: (context) => const LoginScreen(),
                   ),
                 );
               },

@@ -4,9 +4,11 @@ import '../widgets/calendar_widget.dart';
 import '../widgets/edukasi_slider.dart';
 
 class HomeScreen extends StatelessWidget {
-  final String userName;
+  // final String userName;
 
-  const HomeScreen({super.key, required this.userName});
+  const HomeScreen({super.key});
+
+  // const HomeScreen({super.key, required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,12 @@ class HomeScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Halo, $userName',
+                        // Text('Halo, $userName',
+                        //     style: const TextStyle(
+                        //       fontSize: 18,
+                        //       fontWeight: FontWeight.bold,
+                        //     )),
+                        Text('Halo, JiMun',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'success_screen.dart';
+import '../services/auth_service.dart';
 
-class RegisterScreen extends StatelessWidget {
+
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final numberController = TextEditingController();
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
 
+class _RegisterScreenState extends State<RegisterScreen> {
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final nohpController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.black),
@@ -40,13 +50,56 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center),
                   const SizedBox(height: 20),
-                  TextField(controller: numberController, decoration: inputDecoration("Number", Icons.confirmation_number)),
+                  
                   const SizedBox(height: 10),
-                  TextField(controller: emailController, decoration: inputDecoration("Email (Opsional)", Icons.email_outlined)),
+                  TextField(
+                    controller: nameController,
+                    decoration: inputDecoration("Nama", Icons.person_outline),
+                  ),
                   const SizedBox(height: 10),
-                  TextField(controller: passwordController, obscureText: true, decoration: inputDecoration("Password", Icons.lock_outline)),
+                  TextField(
+                    controller: emailController,
+                    decoration: inputDecoration("Email (Opsional)", Icons.email_outlined),
+                  ),
                   const SizedBox(height: 10),
-                  TextField(controller: confirmPasswordController, obscureText: true, decoration: inputDecoration("Confirm Password", Icons.lock)),
+                  TextField(
+                    controller: nohpController,
+                    decoration: inputDecoration("No. Telp", Icons.confirmation_number),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: inputDecoration("Password", Icons.lock_outline).copyWith(
+                          suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: confirmPasswordController,
+                    obscureText: _obscureConfirmPassword,
+                    decoration: inputDecoration("Konfirmasi Password", Icons.lock).copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -60,8 +113,38 @@ class RegisterScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 10),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => const SuccessScreen()));
+                        onPressed: () async {
+                          if (nohpController.text.isEmpty ||
+                              nameController.text.isEmpty ||
+                              passwordController.text.isEmpty ||
+                              confirmPasswordController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Semua field wajib diisi, kecuali email!')),
+                              );
+                            return;
+                            }
+                          if (passwordController.text != confirmPasswordController.text) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Password dan konfirmasi tidak sama!')),
+                            );
+                            return;
+                          }
+
+                          // Call the registration function from AuthService
+                          final result = await AuthService.register(
+                            name: nameController.text,
+                            email: emailController.text,
+                            nohp: nohpController.text,
+                            password: passwordController.text,
+
+                          );
+                          if (result['success']) {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const SuccessScreen()));
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result['message'] ?? 'Registrasi gagal')),
+                            );
+                          }
                         },
                         style: buttonStyle(),
                         child: Text("Registrasi", style: GoogleFonts.aclonica()),
