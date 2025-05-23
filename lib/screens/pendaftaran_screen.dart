@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/antrian_data.dart';
 import 'antrian_screen.dart';
 
 class PendaftaranScreen extends StatefulWidget {
@@ -122,34 +123,33 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
+                    // Simpan ke AntrianData
+                    AntrianData.adaAntrian = true;
+                    AntrianData.nomorAntrian = 15;
+                    AntrianData.nama = namaController.text;
+                    AntrianData.nik = nikController.text;
+                    AntrianData.tanggalLahir = tanggalController.text;
+                    AntrianData.jenisImunisasi = imunisasiController.text;
+                    AntrianData.tanggalPelayanan = '20 Januari 2025';
+                    AntrianData.lokasi = 'Puskesmas Deket Lamongan';
+
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => AntrianScreen(
-                          adaAntrian: true,
-                          nomorAntrian: 15,
-                          nama: namaController.text,
-                          nik: nikController.text,
-                          tanggalLahir: tanggalController.text,
-                          jenisImunisasi: imunisasiController.text,
-                          tanggalPelayanan: '20 Januari 2025',
-                          lokasi: 'Puskesmas Deket Lamongan',
-                        ),
+                        builder: (_) => const AntrianScreen(),
                       ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF009688),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),
                   ),
                   child: const Text(
                     'DAFTAR SEKARANG',
-                    style:
-                        TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -173,8 +173,7 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
             hintText: hint,
             filled: true,
             fillColor: Colors.grey[100],
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
