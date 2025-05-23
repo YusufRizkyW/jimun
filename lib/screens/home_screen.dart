@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/menu_card.dart';
 import '../widgets/calendar_widget.dart';
 import '../widgets/edukasi_slider.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   // final String userName;
@@ -47,9 +48,17 @@ class HomeScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                    const CircleAvatar(
-                      radius: 25,
-                      backgroundImage: AssetImage('assets/images/avatar.png'),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                        );
+                      },
+                      child: const CircleAvatar(
+                        radius: 25,
+                        backgroundImage: AssetImage('assets/images/avatar.png'),
+                      ),
                     )
                   ],
                 ),
