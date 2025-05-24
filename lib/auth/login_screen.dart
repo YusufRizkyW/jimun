@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'register_screen.dart';
-import 'success_screen.dart';
-import '../services/auth_service.dart'; // Pastikan Anda mengimpor AuthService
-import '../screens/home_screen.dart'; // Pastikan Anda mengimpor HomeScreen jika diperlukan
+import '../services/auth_service.dart';
+import '../screens/home_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final nohpController = TextEditingController();
-    final passwordController = TextEditingController();
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
+class _LoginScreenState extends State<LoginScreen> {
+  final nohpController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.black),
@@ -48,8 +53,20 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   TextField(
                     controller: passwordController,
-                    obscureText: true,
-                    decoration: inputDecoration("Password", Icons.lock_outline),
+                    obscureText: _obscurePassword,
+                    decoration: inputDecoration("Password", Icons.lock_outline).copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.grey[700],
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -66,11 +83,9 @@ class LoginScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(builder: (_) => const HomeScreen()),
                             );
-                            // TODO: Arahkan ke halaman utama/home setelah login sukses
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Login berhasil!')),
                             );
-                            // Contoh: Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen()));
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(result['message'] ?? 'Login gagal')),
@@ -83,7 +98,10 @@ class LoginScreen extends StatelessWidget {
                       const SizedBox(width: 10),
                       OutlinedButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => const RegisterScreen()));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                          );
                         },
                         style: buttonStyle(isOutlined: true),
                         child: Text("Registrasi", style: GoogleFonts.aclonica()),

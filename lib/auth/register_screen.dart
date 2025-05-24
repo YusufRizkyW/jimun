@@ -3,7 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'success_screen.dart';
 import '../services/auth_service.dart';
 
-
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -20,21 +19,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: const BackButton(color: Colors.black),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 20),
-          Image.asset('assets/images/logo.png', width: 120, height: 120),
-          const SizedBox(height: 20),
-          Expanded(
-            child: Container(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Image.asset('assets/images/logo.png', width: 120, height: 120),
+            const SizedBox(height: 20),
+            Container(
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
                 color: Color(0xFF009688),
@@ -50,31 +51,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       textAlign: TextAlign.center),
                   const SizedBox(height: 20),
-                  
-                  const SizedBox(height: 10),
                   TextField(
                     controller: nameController,
-                    decoration: inputDecoration("Nama", Icons.person_outline),
+                    decoration: inputDecoration("Nama", Icons.person),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: emailController,
-                    decoration: inputDecoration("Email (Opsional)", Icons.email_outlined),
+                    decoration: inputDecoration("Email (Opsional)", Icons.email),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: nohpController,
-                    decoration: inputDecoration("No. Telp", Icons.confirmation_number),
+                    keyboardType: TextInputType.phone,
+                    decoration: inputDecoration("No. Telp", Icons.phone),
                   ),
                   const SizedBox(height: 10),
                   TextField(
                     controller: passwordController,
                     obscureText: _obscurePassword,
-                    decoration: inputDecoration("Password", Icons.lock_outline).copyWith(
-                          suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                        ),
+                    decoration: inputDecoration("Password", Icons.lock).copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                         onPressed: () {
                           setState(() {
                             _obscurePassword = !_obscurePassword;
@@ -89,9 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     obscureText: _obscureConfirmPassword,
                     decoration: inputDecoration("Konfirmasi Password", Icons.lock).copyWith(
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
-                        ),
+                        icon: Icon(_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
                         onPressed: () {
                           setState(() {
                             _obscureConfirmPassword = !_obscureConfirmPassword;
@@ -118,11 +114,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               nameController.text.isEmpty ||
                               passwordController.text.isEmpty ||
                               confirmPasswordController.text.isEmpty) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Semua field wajib diisi, kecuali email!')),
-                              );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Semua field wajib diisi, kecuali email!')),
+                            );
                             return;
-                            }
+                          }
+
                           if (passwordController.text != confirmPasswordController.text) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Password dan konfirmasi tidak sama!')),
@@ -130,16 +127,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return;
                           }
 
-                          // Call the registration function from AuthService
                           final result = await AuthService.register(
                             name: nameController.text,
                             email: emailController.text,
                             nohp: nohpController.text,
                             password: passwordController.text,
-
                           );
+
                           if (result['success']) {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const SuccessScreen()));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const SuccessScreen()),
+                            );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(result['message'] ?? 'Registrasi gagal')),
@@ -154,8 +153,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               ),
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
