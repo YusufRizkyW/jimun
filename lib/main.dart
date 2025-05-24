@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
+import 'screens/kalender_detail_screen.dart';
 // Import auth
 import 'auth/welcome_screen.dart';
 import 'auth/login_screen.dart';
@@ -29,17 +29,19 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const OnboardingScreen(),
-        '/welcome': (context) => const WelcomeScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
-        '/success': (context) => const SuccessScreen(),
-        // '/home': (context) => const HomeScreen(userName: 'Aisyah Nur Aini'),
-        '/home': (context) => const HomeScreen(),
-      },
+  '/': (context) => const OnboardingScreen(),
+  '/welcome': (context) => const WelcomeScreen(),
+  '/login': (context) => const LoginScreen(),
+  '/register': (context) => const RegisterScreen(),
+  '/success': (context) => const SuccessScreen(),
+  '/home': (context) => const HomeScreen(),
+  '/calendar': (context) => const KalenderDetailScreen(), // ← TANPA koma setelah baris terakhir
+},
+
     );
   }
 }
+
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
