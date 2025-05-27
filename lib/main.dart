@@ -9,7 +9,7 @@ import 'auth/register_screen.dart';
 import 'auth/success_screen.dart';
 
 // Import dashboard
-import 'screens/home_screen.dart';
+// import 'screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,14 +29,14 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-  '/': (context) => const OnboardingScreen(),
-  '/welcome': (context) => const WelcomeScreen(),
-  '/login': (context) => const LoginScreen(),
-  '/register': (context) => const RegisterScreen(),
-  '/success': (context) => const SuccessScreen(),
-  '/home': (context) => const HomeScreen(),
-  '/calendar': (context) => const KalenderDetailScreen(), // ← TANPA koma setelah baris terakhir
-},
+        '/': (context) => const OnboardingScreen(),
+        '/welcome': (context) => const WelcomeScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/success': (context) => const SuccessScreen(),
+        // '/home': (context) => const HomeScreen(userName: 'User' ),
+        '/calendar': (context) => const KalenderDetailScreen(), // ← TANPA koma setelah baris terakhir
+      },
 
     );
   }

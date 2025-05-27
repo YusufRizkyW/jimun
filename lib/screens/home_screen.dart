@@ -5,11 +5,16 @@ import '../widgets/edukasi_slider.dart';
 import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  // final String userName;
+  final String userName;
+  final String userEmail;
+  final String userNohp;
 
-  const HomeScreen({super.key});
+  // const HomeScreen({super.key});
 
-  // const HomeScreen({super.key, required this.userName});
+  const HomeScreen({super.key, 
+  required this.userName,
+  required this.userEmail,
+  required this.userNohp});
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +34,16 @@ class HomeScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Text('Halo, $userName',
-                        //     style: const TextStyle(
-                        //       fontSize: 18,
-                        //       fontWeight: FontWeight.bold,
-                        //     )),
-                        Text('Halo, JiMun',
+                        Text('Halo, $userName',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             )),
+                        // Text('Halo, JiMun',
+                        //     style: const TextStyle(
+                        //       fontSize: 18,
+                        //       fontWeight: FontWeight.bold,
+                        //     )),
                         const Text(
                           'JiMun',
                           style: TextStyle(
@@ -52,8 +57,19 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => ProfileScreen(
+                              name: userName,
+                              email: userEmail,
+                              nohp: userNohp,
+                            ),
+                          ),
                         );
+                        // Ganti dengan navigasi ke halaman profil
+                        // Navigator.pushNamed(context, '/profile');
+                        // Ganti dengan navigasi ke halaman profil
+                        // Navigator.pushNamed(context, '/profile');  
+
                       },
                       child: const CircleAvatar(
                         radius: 25,

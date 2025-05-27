@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
   static Future<Map<String, dynamic>> register({
@@ -53,7 +54,11 @@ class AuthService {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return {'success': true, 'data': jsonDecode(response.body)};
+      final data = jsonDecode(response.body);
+      // Simpan token ke SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', data['token']); // pastikan key 'token' sesuai dengan response API-mu
+      return {'success': true, 'data': data};
     } else {
       String message = 'Login gagal';
       try {
@@ -63,6 +68,26 @@ class AuthService {
         }
       } catch (_) {}
       return {'success': false, 'message': message};
+    }
+  }
+
+
+
+
+  static Future<bool> logout({required String token}) async {
+    try {
+      final url = Uri.parse('http://127.0.0.1:8000/api/logout');
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      print('Logout error: $e');
+      return false;
     }
   }
 }

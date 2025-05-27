@@ -1,8 +1,30 @@
 import 'package:flutter/material.dart';
-import '../models/antrian_data.dart';
+import '../services/antrian_service.dart' as antrian_service;
 
-class AntrianScreen extends StatelessWidget {
+class AntrianScreen extends StatefulWidget {
   const AntrianScreen({super.key});
+
+  @override
+  State<AntrianScreen> createState() => _AntrianScreenState();
+}
+
+class _AntrianScreenState extends State<AntrianScreen> {
+  List<Map<String, dynamic>> antrianList = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAntrian();
+  }
+
+  Future<void> fetchAntrian() async {
+    final data = await antrian_service.AntrianService.fetchAntrian();
+    setState(() {
+      antrianList = data;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +56,50 @@ class AntrianScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: AntrianData.adaAntrian ? _buildAntrianCard() : _buildKosong(),
+                child: isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : antrianList.isEmpty
+                        ? _buildKosong()
+                        : ListView.builder(
+                            itemCount: antrianList.length,
+                            itemBuilder: (context, index) {
+                              final item = antrianList[index];
+                              return Card(
+                                margin: const EdgeInsets.only(bottom: 16),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CircleAvatar(
+                                            radius: 30,
+                                            backgroundColor: Colors.amber,
+                                            child: Text(
+                                              item['nomor_antrian']?.toString() ?? '-',
+                                              style: const TextStyle(fontSize: 24, color: Colors.black),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text("Nama : ${item['nama'] ?? '-'}"),
+                                                Text("NIK : ${item['nik'] ?? '-'}"),
+                                                Text("Tanggal Lahir : ${item['tanggal_lahir']?.toString().substring(0, 10) ?? '-'}"),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
               ),
             ],
           ),
@@ -56,82 +121,6 @@ class AntrianScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildAntrianCard() {
-    return ListView(
-      children: [
-        _sectionTitle("Nomor Antrian Anda"),
-        _infoCard(
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.amber,
-                child: Text(
-                  AntrianData.nomorAntrian.toString(),
-                  style: const TextStyle(fontSize: 24, color: Colors.black),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text("Anda berada pada nomor antrian ${AntrianData.nomorAntrian}"),
-            ],
-          ),
-        ),
-        _sectionTitle("Data Pasien"),
-        _infoCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Nama : ${AntrianData.nama}"),
-              Text("NIK : ${AntrianData.nik}"),
-              Text("Tanggal Lahir : ${AntrianData.tanggalLahir}"),
-              Text("Jenis Imunisasi : ${AntrianData.jenisImunisasi}"),
-            ],
-          ),
-        ),
-        _sectionTitle("Jadwal Pelayanan"),
-        _infoCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text("Tanggal : ${AntrianData.tanggalPelayanan}"),
-              Text("Lokasi : ${AntrianData.lokasi}"),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _sectionTitle(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.teal,
-        ),
-      ),
-    );
-  }
-
-  Widget _infoCard({required Widget child}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(blurRadius: 6, color: Colors.black12, offset: Offset(0, 2)),
-        ],
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: child,
     );
   }
 }

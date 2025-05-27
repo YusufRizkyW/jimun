@@ -58,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 10),
                   TextField(
                     controller: emailController,
-                    decoration: inputDecoration("Email (Opsional)", Icons.email),
+                    decoration: inputDecoration("Email", Icons.email),
                   ),
                   const SizedBox(height: 10),
                   TextField(
@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               passwordController.text.isEmpty ||
                               confirmPasswordController.text.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Semua field wajib diisi, kecuali email!')),
+                              const SnackBar(content: Text('Semua field wajib diisi')),
                             );
                             return;
                           }

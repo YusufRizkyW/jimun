@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/antrian_data.dart';
+// import '../models/antrian_data.dart';
+import '../services/antrian_service.dart' as antrian_service;
 import 'antrian_screen.dart';
 
 class PendaftaranScreen extends StatefulWidget {
@@ -13,7 +14,7 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
   final TextEditingController nikController = TextEditingController();
   final TextEditingController namaController = TextEditingController();
   final TextEditingController tanggalController = TextEditingController();
-  final TextEditingController imunisasiController = TextEditingController();
+  // final TextEditingController imunisasiController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +111,9 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
                           const SizedBox(height: 12),
                           formField('Nama lengkap anak', '', namaController),
                           const SizedBox(height: 12),
-                          formField('Tanggal Lahir', '', tanggalController),
-                          const SizedBox(height: 12),
-                          formField('Jenis Imunisasi', '', imunisasiController),
+                          formField('Tanggal Lahir', '', tanggalController, isDate: true),
+                          // const SizedBox(height: 12),
+                          // formField('Jenis Imunisasi', '', imunisasiController),
                         ],
                       ),
                     ),
@@ -122,23 +123,40 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
               const SizedBox(height: 24),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Simpan ke AntrianData
-                    AntrianData.adaAntrian = true;
-                    AntrianData.nomorAntrian = 15;
-                    AntrianData.nama = namaController.text;
-                    AntrianData.nik = nikController.text;
-                    AntrianData.tanggalLahir = tanggalController.text;
-                    AntrianData.jenisImunisasi = imunisasiController.text;
-                    AntrianData.tanggalPelayanan = '20 Januari 2025';
-                    AntrianData.lokasi = 'Puskesmas Deket Lamongan';
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const AntrianScreen(),
-                      ),
+                  onPressed: () async {
+                    final result = await antrian_service.AntrianService.daftarAntrian(
+                      nik: nikController.text,
+                      nama: namaController.text,
+                      tanggalLahir: tanggalController.text,
                     );
+
+                    if (result['success']) {
+                      // Tampilkan pesan sukses
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Pendaftaran berhasil!'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      // Tunggu sebentar sebelum redirect
+                      await Future.delayed(const Duration(seconds: 1));
+                      if (context.mounted) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const AntrianScreen(),
+                          ),
+                        );
+                      }
+                    } else {
+                      // Tampilkan pesan error
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(result['message'] ?? 'Pendaftaran gagal'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF009688),
@@ -161,7 +179,7 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
     );
   }
 
-  Widget formField(String label, String hint, TextEditingController controller) {
+  Widget formField(String label, String hint, TextEditingController controller, {bool isDate = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -169,6 +187,7 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
         const SizedBox(height: 4),
         TextField(
           controller: controller,
+          readOnly: isDate,
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
@@ -178,7 +197,22 @@ class _PendaftaranScreenState extends State<PendaftaranScreen> {
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
+            suffixIcon: isDate ? const Icon(Icons.calendar_today) : null,
           ),
+          onTap: isDate
+              ? () async {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime.now(),
+                  );
+                  if (picked != null) {
+                    controller.text = "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
+                  }
+                }
+              : null,
         ),
       ],
     );

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jimun/auth/welcome_screen.dart';
 import 'register_screen.dart';
 import '../services/auth_service.dart';
 import '../screens/home_screen.dart';
+// import '../main.dart'; // Pastikan path ini sesuai dengan struktur project kamu
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,7 +22,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => WelcomeScreen()), // Ganti MyApp() dengan widget halaman utama kamu jika berbeda
+              (route) => false,
+            );
+          },
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -79,9 +90,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             password: passwordController.text,
                           );
                           if (result['success']) {
+                            final userName = result['data']['user']['name'] ?? 'User';
+                            final userNohp = result['data']['user']['nohp'] ?? '-';
+                            final userEmail = result['data']['user']['email'] ?? '-';
+
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (_) => const HomeScreen()),
+                              MaterialPageRoute(
+                                builder: (_) => HomeScreen(
+                                  userName: userName,
+                                  userNohp: userNohp,
+                                  userEmail: userEmail,
+                                ),
+                              ),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text('Login berhasil!')),
