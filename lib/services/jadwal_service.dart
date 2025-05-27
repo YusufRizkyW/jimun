@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class JadwalService {
   static Future<List<Map<String, dynamic>>> fetchJadwal() async {
     try {
-      final url = Uri.parse('http://127.0.0.1:8000/api/jadwals');
+      final url = Uri.parse('http://18.142.213.110/api/jadwals');
       final response = await http.get(url);
 
       if (response.statusCode == 200) {

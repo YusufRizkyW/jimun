@@ -15,7 +15,7 @@ class AntrianService {
       return {'success': false, 'message': 'Token tidak ditemukan. Silakan login ulang.'};
     }
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/antrians');
+    final url = Uri.parse('http://18.142.213.110/api/antrians');
     final response = await http.post(
       url,
       headers: {
@@ -48,7 +48,7 @@ class AntrianService {
     final token = prefs.getString('token');
     if (token == null) return [];
 
-    final url = Uri.parse('http://127.0.0.1:8000/api/antrians');
+    final url = Uri.parse('http://18.142.213.110/api/antrians');
     final response = await http.get(
       url,
       headers: {

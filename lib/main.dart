@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'screens/kalender_detail_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 // Import auth
 import 'auth/welcome_screen.dart';
 import 'auth/login_screen.dart';
@@ -9,7 +11,7 @@ import 'auth/register_screen.dart';
 import 'auth/success_screen.dart';
 
 // Import dashboard
-// import 'screens/home_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -29,19 +31,53 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const OnboardingScreen(),
+        '/': (context) => const EntryScreen(), // Ganti SplashScreen jadi EntryScreen
+        '/onboarding': (context) => const OnboardingScreen(),
+        '/splash': (context) => const SplashScreen(),
         '/welcome': (context) => const WelcomeScreen(),
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/success': (context) => const SuccessScreen(),
-        // '/home': (context) => const HomeScreen(userName: 'User' ),
-        '/calendar': (context) => const KalenderDetailScreen(), // ← TANPA koma setelah baris terakhir
+        '/calendar': (context) => const KalenderDetailScreen(),
       },
-
     );
   }
 }
 
+// EntryScreen: menentukan apakah tampil onboarding atau langsung ke splash
+class EntryScreen extends StatefulWidget {
+  const EntryScreen({super.key});
+
+  @override
+  State<EntryScreen> createState() => _EntryScreenState();
+}
+
+class _EntryScreenState extends State<EntryScreen> {
+  @override
+  void initState() {
+    super.initState();
+    checkOnboarding();
+  }
+
+  Future<void> checkOnboarding() async {
+    final prefs = await SharedPreferences.getInstance();
+    final alreadyOnboard = prefs.getBool('alreadyOnboard') ?? false;
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (!mounted) return;
+    if (alreadyOnboard) {
+      Navigator.pushReplacementNamed(context, '/splash');
+    } else {
+      Navigator.pushReplacementNamed(context, '/onboarding');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
+}
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -105,9 +141,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (isLastPage) {
-                        Navigator.pushReplacementNamed(context, '/welcome');
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('alreadyOnboard', true);
+                        Navigator.pushReplacementNamed(context, '/splash');
                       } else {
                         _controller.nextPage(
                           duration: const Duration(milliseconds: 500),
@@ -185,5 +223,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
-//ini adalah sebuah jbsiwdbwdiwi
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    checkLogin();
+  }
+
+  Future<void> checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    if (token != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const HomeScreen(),
+        ),
+      );
+    } else {
+      Navigator.pushReplacementNamed(context, '/welcome');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
+}

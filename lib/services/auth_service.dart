@@ -9,7 +9,7 @@ class AuthService {
     required String nohp,
     required String password,
     }) async {
-          final url = Uri.parse('http://127.0.0.1:8000/api/register');
+          final url = Uri.parse('http://18.142.213.110/api/register');
           final response = await http.post(
             url,
             headers: {'Content-Type': 'application/json'},
@@ -43,7 +43,7 @@ class AuthService {
     required String nohp,
     required String password,
   }) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/login');
+    final url = Uri.parse('http://18.142.213.110/api/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -55,9 +55,14 @@ class AuthService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
-      // Simpan token ke SharedPreferences
+      // Simpan token dan data user ke SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', data['token']); // pastikan key 'token' sesuai dengan response API-mu
+      prefs.setString('token', data['token']);
+      if (data['user'] != null) {
+        prefs.setString('userName', data['user']['name'] ?? '');
+        prefs.setString('userEmail', data['user']['email'] ?? '');
+        prefs.setString('userNohp', data['user']['nohp'] ?? '');
+      }
       return {'success': true, 'data': data};
     } else {
       String message = 'Login gagal';
@@ -76,7 +81,7 @@ class AuthService {
 
   static Future<bool> logout({required String token}) async {
     try {
-      final url = Uri.parse('http://127.0.0.1:8000/api/logout');
+      final url = Uri.parse('http://18.142.213.110/api/logout');
       final response = await http.post(
         url,
         headers: {
