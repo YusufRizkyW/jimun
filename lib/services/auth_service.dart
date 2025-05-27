@@ -55,9 +55,14 @@ class AuthService {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
-      // Simpan token ke SharedPreferences
+      // Simpan token dan data user ke SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString('token', data['token']); // pastikan key 'token' sesuai dengan response API-mu
+      prefs.setString('token', data['token']);
+      if (data['user'] != null) {
+        prefs.setString('userName', data['user']['name'] ?? '');
+        prefs.setString('userEmail', data['user']['email'] ?? '');
+        prefs.setString('userNohp', data['user']['nohp'] ?? '');
+      }
       return {'success': true, 'data': data};
     } else {
       String message = 'Login gagal';
