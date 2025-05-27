@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'screens/kalender_detail_screen.dart';
-// Import auth
 import 'auth/welcome_screen.dart';
 import 'auth/login_screen.dart';
 import 'auth/register_screen.dart';
 import 'auth/success_screen.dart';
-
-// Import dashboard
-// import 'screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,14 +30,11 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/success': (context) => const SuccessScreen(),
-        // '/home': (context) => const HomeScreen(userName: 'User' ),
-        '/calendar': (context) => const KalenderDetailScreen(), // ← TANPA koma setelah baris terakhir
+        '/calendar': (context) => const KalenderDetailScreen(),
       },
-
     );
   }
 }
-
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -78,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   buildPage(
                     topText:
-                        "Aplikasi yang dibuat dengan tujuan\nuntuk mempermudah anda mengakses\njadwal imunisasi, antrian online,\ndan edukasi yang bermanfaat",
+                        "Aplikasi yang dibuat dengan tujuan untuk mempermudah anda mengakses jadwal imunisasi, antrian online, dan edukasi yang bermanfaat.",
                     image: "assets/images/logo.png",
                     height: screenHeight,
                   ),
@@ -140,12 +133,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  /// Widget halaman onboarding, font otomatis kecil jika teksnya panjang
   Widget buildPage({
     required String topText,
     required String image,
     required double height,
     String? bottomText,
   }) {
+    // Deteksi jika teks panjang (banyak baris) → kecilkan font
+    final bool isLongText = topText.contains('\n') || topText.length > 60;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       child: Column(
@@ -155,7 +152,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             topText,
             textAlign: TextAlign.center,
             style: GoogleFonts.aclonica(
-              fontSize: height * 0.022,
+              fontSize: isLongText ? 17 : height * 0.022, // Kecilkan kalau teks panjang
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
@@ -184,6 +181,3 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 }
-
-
-//ini adalah sebuah jbsiwdbwdiwi

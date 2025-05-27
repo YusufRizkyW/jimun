@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jimun/auth/login_screen.dart';
 import '../services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String name;
@@ -40,10 +41,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 30,
-                      backgroundColor: Colors.black12,
-                      child: Icon(Icons.person, size: 30),
+                       backgroundColor: Colors.teal.shade100, 
+      backgroundImage: const AssetImage('assets/images/avatar.png'), 
                     ),
                     const SizedBox(width: 12),
                     Column(
@@ -95,21 +96,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 //     border: const UnderlineInputBorder(),
                 //   ),
                 // ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
                 Opacity(
                   opacity: 0.2,
                   child: Image.asset(
                     'assets/images/logo.png',
-                    height: 100,
+                    height: 150,
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'JiMun',
-                  style: TextStyle(
+                  style: GoogleFonts.aclonica(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Sans'),
+                    ),
                 ),
               ],
             ),

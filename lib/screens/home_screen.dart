@@ -3,6 +3,8 @@ import '../widgets/menu_card.dart';
 import '../widgets/calendar_widget.dart';
 import '../widgets/edukasi_slider.dart';
 import 'profile_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 class HomeScreen extends StatelessWidget {
   final String userName;
@@ -19,6 +21,12 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //navbar bawah
+      bottomNavigationBar: Container(
+  height: 50,
+  color: Colors.teal, 
+),
+
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
@@ -44,9 +52,9 @@ class HomeScreen extends StatelessWidget {
                         //       fontSize: 18,
                         //       fontWeight: FontWeight.bold,
                         //     )),
-                        const Text(
+                        Text(
                           'JiMun',
-                          style: TextStyle(
+                          style: GoogleFonts.aclonica(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
                           ),
@@ -78,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 
                 // Menu
                 // Menu
@@ -101,17 +109,17 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 34),
                 
                 // Kalender
                 const CalendarWidget(),
-                const SizedBox(height: 16),
+                const SizedBox(height: 40),
 
                 const Text(
                   'Edukasi Kesehatan',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 30),
 
                 const EdukasiSlider(),
               ],
