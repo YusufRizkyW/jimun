@@ -4,6 +4,7 @@ import '../widgets/menu_card.dart';
 import '../widgets/calendar_widget.dart';
 import '../widgets/edukasi_slider.dart';
 import 'profile_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,31 +25,17 @@ class _HomeScreenState extends State<HomeScreen> {
     loadAllData();
   }
 
-  // Fungsi utama untuk refresh semua data
+  // Ambil data user dari SharedPreferences
   Future<void> loadAllData() async {
+    setState(() => isLoading = true);
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isLoading = true;
-    });
-    await Future.wait([
-      loadUser(),
-      // loadCalendar(), // Tambahkan fungsi lain jika ada
-    ]);
-    setState(() {
+      userName = prefs.getString('userName') ?? '';
+      userEmail = prefs.getString('userEmail') ?? '';
+      userNohp = prefs.getString('userNohp') ?? '';
       isLoading = false;
     });
   }
-
-  Future<void> loadUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    userName = prefs.getString('userName') ?? '';
-    userEmail = prefs.getString('userEmail') ?? '';
-    userNohp = prefs.getString('userNohp') ?? '';
-  }
-
-  // Contoh fungsi load data kalender (jika ada)
-  // Future<void> loadCalendar() async {
-  //   calendarEvents = await CalendarService.fetchEvents();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -57,88 +44,107 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    // Batasi max width agar tidak terlalu lebar di desktop/proyektor
+    final maxContentWidth = 500.0;
+
     return Scaffold(
+      
       backgroundColor: Colors.white,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: loadAllData, // Ganti jadi loadAllData
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          onRefresh: loadAllData,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxContentWidth),
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth > 600 ? 24 : 16, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      // Header dengan nama user dan profile
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Halo, $userName',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Halo, $userName',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'JiMun',
+                                style: GoogleFonts.aclonica(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Avatar profile, klik untuk ke halaman ProfileScreen
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ProfileScreen(),
+                                ),
+                              );
+                            },
+                            child: const CircleAvatar(
+                              radius: 22,
+                              backgroundImage:
+                                  AssetImage('assets/images/avatar.png'),
                             ),
                           ),
-                          const Text(
-                            'JiMun',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          )
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => ProfileScreen(),
+                      const SizedBox(height: 26),
+
+                      // Menu Pendaftaran dan Antrian (pake Expanded biar responsif)
+                      Row(
+                        children: const [
+                          Expanded(
+                            child: MenuCard(
+                              icon: Icons.assignment,
+                              title: 'Pendaftaran',
                             ),
-                          );
-                        },
-                        child: const CircleAvatar(
-                          radius: 25,
-                          backgroundImage: AssetImage('assets/images/avatar.png'),
-                        ),
-                      )
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: MenuCard(
+                              icon: Icons.people,
+                              title: 'Antrian',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Kalender Imunisasi
+                      const CalendarWidget(),
+                      const SizedBox(height: 10),
+
+                      const Text(
+                        'Edukasi Kesehatan',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Slider edukasi (akan otomatis responsif)
+                      const EdukasiSlider(),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  // Menu
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      Expanded(
-                        child: MenuCard(
-                          icon: Icons.assignment,
-                          title: 'Pendaftaran',
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: MenuCard(
-                          icon: Icons.people,
-                          title: 'Antrian',
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Kalender
-                  const CalendarWidget(), // Ganti jika ingin passing data kalender dari state
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Edukasi Kesehatan',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-                  const EdukasiSlider(),
-                ],
+                ),
               ),
             ),
           ),

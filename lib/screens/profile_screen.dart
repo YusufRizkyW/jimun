@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jimun/auth/login_screen.dart';
 import '../services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     loadUser();
   }
 
+  // Ambil data user dari SharedPreferences
   Future<void> loadUser() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -52,10 +54,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       Row(
                         children: [
+                          // Avatar gambar
                           const CircleAvatar(
                             radius: 30,
-                            backgroundColor: Colors.black12,
-                            child: Icon(Icons.person, size: 30),
+                            backgroundColor: Colors.teal,
+                            backgroundImage: AssetImage('assets/images/avatar.png'),
                           ),
                           const SizedBox(width: 12),
                           Column(
@@ -98,12 +101,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Text(
+                      Text(
                         'JiMun',
-                        style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Sans'),
+                        style: GoogleFonts.aclonica(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,)
                       ),
                     ],
                   ),
@@ -124,10 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         final token = prefs.getString('token');
                         if (token != null) {
                           await AuthService.logout(token: token);
-                          await prefs.remove('token');
-                          await prefs.remove('userName');
-                          await prefs.remove('userEmail');
-                          await prefs.remove('userNohp');
+                          await prefs.clear();
                         }
                         if (context.mounted) {
                           Navigator.pushAndRemoveUntil(
@@ -145,6 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // Widget field statis untuk info user
   Widget fieldStatic({required String label, required String value}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

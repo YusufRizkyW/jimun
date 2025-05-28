@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'screens/kalender_detail_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// Import auth
+import 'screens/kalender_detail_screen.dart';
 import 'auth/welcome_screen.dart';
 import 'auth/login_screen.dart';
 import 'auth/register_screen.dart';
 import 'auth/success_screen.dart';
-
-// Import dashboard
 import 'screens/home_screen.dart';
 
 void main() {
@@ -31,7 +28,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const EntryScreen(), // Ganti SplashScreen jadi EntryScreen
+        '/': (context) => const EntryScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/splash': (context) => const SplashScreen(),
         '/welcome': (context) => const WelcomeScreen(),
@@ -44,21 +41,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// EntryScreen: menentukan apakah tampil onboarding atau langsung ke splash
 class EntryScreen extends StatefulWidget {
   const EntryScreen({super.key});
-
   @override
   State<EntryScreen> createState() => _EntryScreenState();
 }
-
 class _EntryScreenState extends State<EntryScreen> {
   @override
-  void initState() {
-    super.initState();
-    checkOnboarding();
-  }
-
+  void initState() { super.initState(); checkOnboarding(); }
   Future<void> checkOnboarding() async {
     final prefs = await SharedPreferences.getInstance();
     final alreadyOnboard = prefs.getBool('alreadyOnboard') ?? false;
@@ -70,18 +60,15 @@ class _EntryScreenState extends State<EntryScreen> {
       Navigator.pushReplacementNamed(context, '/onboarding');
     }
   }
-
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }
 
+// ONBOARDING
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
-
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
@@ -107,18 +94,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
                 children: [
                   buildPage(
+                    context: context,
                     topText: "Selamat datang",
                     bottomText: "jiMun",
                     image: "assets/images/logo.png",
                     height: screenHeight,
                   ),
                   buildPage(
+                    context: context,
                     topText:
-                        "Aplikasi yang dibuat dengan tujuan\nuntuk mempermudah anda mengakses\njadwal imunisasi, antrian online,\ndan edukasi yang bermanfaat",
+                        "Aplikasi yang dibuat dengan tujuan untuk mempermudah anda mengakses jadwal imunisasi, antrian online, dan edukasi yang bermanfaat.",
                     image: "assets/images/logo.png",
                     height: screenHeight,
                   ),
                   buildPage(
+                    context: context,
                     topText: "jiMun",
                     image: "assets/images/logo.png",
                     height: screenHeight,
@@ -178,12 +168,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  // FINAL: BuildPage dengan fontSize adaptif dan kecil
   Widget buildPage({
+    required BuildContext context,
     required String topText,
     required String image,
     required double height,
     String? bottomText,
   }) {
+    final bool isLongText = topText.length > 65 || topText.split('\n').length > 2;
+    // Ukuran tetap supaya ga pernah kegedean
+    double fontSize = isLongText ? 15.0 : 19.0;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
       child: Column(
@@ -193,7 +189,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             topText,
             textAlign: TextAlign.center,
             style: GoogleFonts.aclonica(
-              fontSize: height * 0.022,
+              fontSize: fontSize,
               fontWeight: FontWeight.w500,
               color: Colors.black87,
             ),
@@ -201,17 +197,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           SizedBox(height: height * 0.04),
           Image.asset(
             image,
-            width: height * 0.25,
-            height: height * 0.25,
+            width: height * 0.23,
+            height: height * 0.23,
             fit: BoxFit.contain,
           ),
           if (bottomText != null) ...[
-            SizedBox(height: height * 0.04),
+            SizedBox(height: height * 0.03),
             Text(
               bottomText,
               textAlign: TextAlign.center,
               style: GoogleFonts.aclonica(
-                fontSize: height * 0.028,
+                fontSize: 21.0,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,
               ),
@@ -223,20 +219,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
+// SplashScreen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
-
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
     checkLogin();
   }
-
   Future<void> checkLogin() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -253,7 +247,6 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacementNamed(context, '/welcome');
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
